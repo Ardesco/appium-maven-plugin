@@ -1,12 +1,44 @@
-*.class
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.rar
+*.tar
+*.zip
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# IntelliJ #
+############
+*.iml
+*.ipr
+*.iws
+**/.idea
+
+# Maven #
+#########
+**/target
+
+# Other IDE's#
+##############
+\.classpath
+\.project
+\.settings
+\.dorsync
+/nbactions.xml
+/bin/
