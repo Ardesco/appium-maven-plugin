@@ -3,6 +3,7 @@ package com.lazerycode.appium.mojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.Os;
 import org.zeroturnaround.process.PidProcess;
 import org.zeroturnaround.process.ProcessUtil;
@@ -20,6 +21,20 @@ import static org.apache.commons.io.FileUtils.readFileToString;
 @Mojo(name = "stop", defaultPhase = LifecyclePhase.POST_INTEGRATION_TEST)
 public class StopAppiumMojo extends AbstractAppiumMojo {
 
+    /**
+     * The amount of time, in seconds, that the plugin will wait for appium to shutdown before it tries to just kill the process.
+     * Default: 15
+     */
+    @Parameter(defaultValue = "15")
+    int shutdownTimeout;
+    /**
+     * The amount of time, in seconds,  to wait for a force shutdown to complete.
+     * If the plugin has not managed to kill appium by the time this timeout is complete the build will fail
+     * Default: 5
+     */
+    @Parameter(defaultValue = "5")
+    int forceShutdownTimeout;
+
     @Override
     public void execute() throws MojoExecutionException {
 
@@ -30,7 +45,7 @@ public class StopAppiumMojo extends AbstractAppiumMojo {
         getLog().info(" ");
 
         try {
-            int appiumProcessPID = Integer.parseInt(readFileToString(new File(projectBuildDirectory, "appium.pid"), UTF_8));
+            int appiumProcessPID = Integer.parseInt(readFileToString(new File(projectBuildDirectory, APPIUM_PID), UTF_8));
             PidProcess appiumProcess = Processes.newPidProcess(appiumProcessPID);
 
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {

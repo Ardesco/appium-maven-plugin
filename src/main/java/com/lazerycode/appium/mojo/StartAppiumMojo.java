@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.codehaus.plexus.util.Os;
 import org.zeroturnaround.process.PidProcess;
 import org.zeroturnaround.process.Processes;
@@ -13,11 +14,56 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static com.lazerycode.appium.configuration.AppiumArguments.*;
+import static com.lazerycode.appium.utility.UtilityFunctions.checkFileExists;
+import static com.lazerycode.appium.utility.UtilityFunctions.waitForAppiumToStart;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Mojo(name = "start", defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST)
 public class StartAppiumMojo extends AbstractAppiumMojo {
 
+    /**
+     * The location of Node JS on disk
+     * Default: ${project.basedir}/src/test/resources/node
+     */
+    @Parameter(defaultValue = "${project.basedir}/src/test/resources/node")
+    File nodeDefaultLocation;
+    /**
+     * The location of Appium on disk
+     * Default: ${project.basedir}/src/test/resources/node_modules/appium
+     */
+    @Parameter(defaultValue = "${project.basedir}/src/test/resources/node_modules/appium")
+    File appiumLocation;
+
+    /**
+     * How long to wait for Appium to start up.
+     * Each tick is a 500ms wait, so 30 ticks is equal to a maxium startup wait time of 15 seconds
+     * Default: 30
+     */
+    @Parameter(defaultValue = "30")
+    int appiumStartupTicks;
+    /**
+     * The IP address of the appium server that is being started up
+     * Default: 0.0.0.0
+     */
+    @Parameter(defaultValue = "0.0.0.0")
+    String appiumIpAddress;
+    /**
+     * The port of the Appium server that is being started up
+     * Default: 4723
+     */
+    @Parameter(defaultValue = "4723")
+    String appiumPort;
+    @Parameter
+    String selendroidPort;
+    @Parameter
+    String chromedriverPort;
+    @Parameter
+    String robotIpAddress;
+    @Parameter
+    String robotPort;
+
+    static final String NODE_EXECUTABLE_WINDOWS = "node.exe";
+    static final String NODE_EXECUTABLE_NIX = "node";
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -29,8 +75,8 @@ public class StartAppiumMojo extends AbstractAppiumMojo {
         getLog().debug("Using Node location: " + nodeDefaultLocation);
         getLog().debug("Using Appium location: " + appiumLocation);
 
-        String nodeBin = Os.isFamily(Os.FAMILY_WINDOWS) ? NODE_EXECUTABLE_WINDOWS : NODE_EXECUTABLE_NIX;
-        File nodeExecutable = new File(nodeDefaultLocation, nodeBin);
+        String nodeBinaryName = Os.isFamily(Os.FAMILY_WINDOWS) ? NODE_EXECUTABLE_WINDOWS : NODE_EXECUTABLE_NIX;
+        File nodeExecutable = new File(nodeDefaultLocation, nodeBinaryName);
         checkFileExists(nodeExecutable);
         checkFileExists(appiumLocation);
 
@@ -58,18 +104,9 @@ public class StartAppiumMojo extends AbstractAppiumMojo {
 
             String processPID = Integer.toString(appiumProcess.getPid());
             FileUtils.writeStringToFile(new File(projectBuildDirectory, APPIUM_PID), processPID, UTF_8);
-
-
-            Thread.sleep(3000);  //TODO wait for server to boot properly
-
+            waitForAppiumToStart(appiumStartupTicks, appiumIpAddress, appiumPort);
         } catch (IOException | InterruptedException ex) {
             throw new MojoExecutionException("Unable to start Appium server!", ex);
-        }
-    }
-
-    private void checkFileExists(File someFile) throws MojoExecutionException {
-        if (!someFile.exists()) {
-            throw new MojoExecutionException("Unable to find file: " + someFile.getAbsolutePath());
         }
     }
 
