@@ -15,7 +15,7 @@
 
     <groupId>com.lazerycode.appium</groupId>
     <artifactId>appium-maven-plugin</artifactId>
-    <version>DEV-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>maven-plugin</packaging>
 
     <name>Appium Maven Plugin</name>
