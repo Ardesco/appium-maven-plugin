@@ -36,7 +36,7 @@ public class StopAppiumMojo extends AbstractAppiumMojo {
     int forceShutdownTimeout;
 
     @Override
-    public void execute() throws MojoExecutionException {
+    public void controlAppiumServer() throws MojoExecutionException {
 
         getLog().info(" ");
         getLog().info("-------------------------------------------------------");

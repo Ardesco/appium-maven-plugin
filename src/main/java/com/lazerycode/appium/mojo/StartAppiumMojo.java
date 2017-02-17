@@ -66,7 +66,7 @@ public class StartAppiumMojo extends AbstractAppiumMojo {
     static final String NODE_EXECUTABLE_NIX = "node";
 
     @Override
-    public void execute() throws MojoExecutionException {
+    public void controlAppiumServer() throws MojoExecutionException {
         getLog().info(" ");
         getLog().info("-------------------------------------------------------");
         getLog().info(" S T A R T I N G   A P P I U M   S E R V E R");
