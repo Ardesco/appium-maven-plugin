@@ -22,8 +22,8 @@ A maven plugin for appium
     <artifactId>appium-maven-plugin</artifactId>
     <version>0.1.0</version>
     <configuration>
-        <nodeDefaultLocation>${project.basedir}/src/test/node</nodeDefaultLocation>
-        <appiumLocation>${project.basedir}/src/test/node_modules/appium</appiumLocation>
+        <nodeDefaultLocation>${project.basedir}</nodeDefaultLocation>
+        <appiumLocation>${project.basedir}</appiumLocation>
     </configuration>
     <executions>
         <execution>
@@ -62,8 +62,8 @@ A maven plugin for appium
                 <goal>install-node-and-npm</goal>
             </goals>
             <configuration>
-                <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
-                <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
+                <nodeVersion>v7.4.0</nodeVersion>
+                <npmVersion>4.1.1</npmVersion>
             </configuration>
         </execution>
         <execution>
@@ -90,8 +90,8 @@ This will require a package.json:
   "version": "0.0.0",
   "description": "Download appium for automated tests",
   "devDependencies": {
-    "appium": "1.6.3",
-    "ios-deploy":"1.9.0"
+    "appium": "1.6.5",
+    "ios-deploy":"1.9.1"
   },
   "scripts": {
     "prestart": "npm install",
